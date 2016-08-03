@@ -8,19 +8,18 @@ ENV JAVA_CHECKSUM=7cfbe0bc0391a4abe60b3e9eb2a541d2315b99b9cb3a24980e618a89229e04
 ENV JAVA_HOME="/usr/lib/jvm/default-jvm"
 ENV LANG C.UTF-8
 
-# 
+#
 RUN apk add --no-cache --virtual=build-dependencies \
 				ca-certificates
 
 # Install Java
 # http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.tar.gz?AuthParam=foo
 # https://www.oracle.com/webfolder/s/digest/8u102checksum.html
-RUN cd "/tmp" \
-	&& wget --header "Cookie: oraclelicense=accept-securebackup-cookie;" \
+RUN curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie;" -o "/tmp/jdk.tar.gz" \
 				"http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_BUILD}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
-	&& tar -xzf "jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" \
-	&& mkdir -p "/usr/lib/jvm" \
-	&& mv "/tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE}" "/usr/lib/jvm/java-${JAVA_VERSION}-oracle" \
+	&& mkdir -p "/usr/lib/jvm/java-${JAVA_VERSION}-oracle/" \
+	&& tar -xzf "/tmp/jdk.tar.gz" -C "/usr/lib/jvm/java-${JAVA_VERSION}-oracle/" \
+	# && mv "/tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE}" "/usr/lib/jvm/java-${JAVA_VERSION}-oracle" \
 	&& ln -s "java-${JAVA_VERSION}-oracle" "$JAVA_HOME" \
 	&& ln -s "$JAVA_HOME/bin/"* "/usr/bin/" \
 	&& rm -rf "$JAVA_HOME/"*src.zip \
